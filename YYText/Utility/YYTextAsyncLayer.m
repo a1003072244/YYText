@@ -200,7 +200,15 @@ static dispatch_queue_t YYTextAsyncLayerGetReleaseQueue() {
     } else {
         [_sentinel increase];
         if (task.willDisplay) task.willDisplay(self);
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.opaque, self.contentsScale);
+        //校验size中不包含0 防止在ios17中闪退
+        CGSize tmpSize = self.bounds.size;
+        if (self.bounds.size.width == 0) {
+            tmpSize.width = 1;
+        }
+        if ( self.bounds.size.height == 0) {
+            tmpSize.height = 1;
+        }
+        UIGraphicsBeginImageContextWithOptions(tmpSize, self.opaque, self.contentsScale);
         CGContextRef context = UIGraphicsGetCurrentContext();
         if (self.opaque && context) {
             CGSize size = self.bounds.size;
